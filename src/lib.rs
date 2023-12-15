@@ -1,4 +1,6 @@
+mod adjacency_list;
 mod binary_sort_tree;
+mod linked_list;
 mod route;
 
 /// 生成 `data_count`(10-20) 个范围在 `max_data`(50-100)之间不重复的整数
@@ -35,8 +37,31 @@ fn rp() {
 ///
 #[cfg(test)]
 mod exp1 {
+    use crate::binary_sort_tree::BinarySortTree;
+
     #[test]
-    fn solution() {}
+    fn solution() {
+        // let testdata = random_i32(10, 50);
+        let testdata = vec![37, 5, 8, 15, 9, 45, 46, 21, 18, 22];
+        let mut tree = BinarySortTree::new();
+        testdata.into_iter().for_each(|ele| {
+            tree.insert(ele).unwrap();
+        });
+
+        assert_eq!(tree.height(), 6, "tree height: {}", tree.height());
+        assert_eq!(
+            tree.leaves(),
+            Some(vec![9, 18, 22, 46]),
+            "tree leaves: {:?}",
+            tree.leaves()
+        );
+        assert_eq!(
+            tree.inorder_traversal().as_str(),
+            "5 -> 8 -> 9 -> 15 -> 18 -> 21 -> 22 -> 37 -> 45 -> 46",
+            "tree inorder traversal: {}",
+            tree.inorder_traversal()
+        );
+    }
 }
 
 /// # 实验二
@@ -50,8 +75,30 @@ mod exp1 {
 ///
 #[cfg(test)]
 mod exp2 {
+    use crate::binary_sort_tree::BinarySortTree;
+
     #[test]
-    fn solution() {}
+    fn solution() {
+        let testdata = vec![37, 5, 8, 15, 9, 45, 46, 21, 18, 22];
+        let mut tree = BinarySortTree::new();
+        testdata.into_iter().for_each(|ele| {
+            tree.insert(ele).unwrap();
+        });
+        let tree_copycat = tree.clone();
+
+        println!("{}", tree.inorder_traversal());
+        let target = 21;
+        println!("remove {target}");
+        tree.remove(&target).unwrap();
+        println!("{}", tree.inorder_traversal());
+        let target = 9;
+        println!("remove {target}");
+        tree.remove(&target).unwrap();
+        println!("{}", tree.inorder_traversal());
+
+        println!("adj_list: \n{:?}", tree_copycat.adjacency_list().unwrap());
+        println!("topology_sort: {}", tree_copycat.topology_sort());
+    }
 }
 
 /// # 实验三
