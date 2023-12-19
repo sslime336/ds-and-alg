@@ -1,5 +1,6 @@
 mod adjacency_list;
 mod binary_sort_tree;
+mod graph;
 mod linked_list;
 mod route;
 
@@ -75,28 +76,44 @@ mod exp1 {
 ///
 #[cfg(test)]
 mod exp2 {
-    use crate::binary_sort_tree::BinarySortTree;
+    use crate::graph::Graph;
+
+    macro_rules! graph {
+        ($($head:expr=>$next:expr,)*) => {
+            {
+                let mut graph: Graph<usize> = Graph::new();
+                $(
+                    graph.push(($head, $next));
+                )*
+                graph
+            }
+        };
+    }
 
     #[test]
     fn solution() {
-        let testdata = vec![37, 5, 8, 15, 9, 45, 46, 21, 18, 22];
-        let mut tree = BinarySortTree::new();
-        testdata.into_iter().for_each(|ele| {
-            tree.insert(ele).unwrap();
-        });
-        let tree_copycat = tree.clone();
+        let dag = graph! {
+            1 => 2,
+            1 => 3,
+            2 => 4,
+            2 => 5,
+            4 => 5,
+            4 => 6,
+            6 => 3,
+        };
+        let adj_list = dag.adjacency_list().unwrap();
+        println!("adjacency list:\n {:?}", adj_list);
 
-        println!("{}", tree.inorder_traversal());
-        let target = 21;
-        println!("remove {target}");
-        tree.remove(&target).unwrap();
-        println!("{}", tree.inorder_traversal());
-        let target = 9;
-        println!("remove {target}");
-        tree.remove(&target).unwrap();
-        println!("{}", tree.inorder_traversal());
-
-        println!("adj_list: \n{:?}", tree_copycat.adjacency_list().unwrap());
-        println!("topology_sort: {}", tree_copycat.topology_sort());
+        let gp = graph! {
+            1 => 2,
+            1 => 3,
+            3 => 1,
+            5 => 3,
+            5 => 4,
+            4 => 2,
+            4 => 6,
+        };
+        let adj_list = gp.adjacency_list().expect("not a DAG");
+        println!("adjacency list:\n {:?}", adj_list);
     }
 }
