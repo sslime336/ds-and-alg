@@ -15,7 +15,7 @@ where
     nodes: RefCell<Vec<(T, T)>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum GraphOpError {
     TargetNotExists,
     ShouldBeDAG,
